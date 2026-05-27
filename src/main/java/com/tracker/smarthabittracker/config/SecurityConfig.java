@@ -38,7 +38,7 @@ public class SecurityConfig {
         this.userRepository = userRepository;
         String rawAllowedOrigins = environment.getProperty(
                 "app.cors.allowed-origins",
-                "http://localhost:5173,http://localhost:5174");
+            "http://localhost:5173,http://localhost:5174,http://localhost:5175");
         this.allowedOrigins = Arrays.stream(rawAllowedOrigins.split(","))
                 .map(String::trim)
                 .filter(origin -> !origin.isEmpty())
