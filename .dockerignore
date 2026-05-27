@@ -1,4 +1,10 @@
-target/
+.git
+.idea
+.vscode
+target
+*.log
+.env
+README.mdtarget/
 .mvn/
 .git
 .gitignore
