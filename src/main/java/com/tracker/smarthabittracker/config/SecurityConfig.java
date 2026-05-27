@@ -19,7 +19,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -29,6 +28,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserRepository userRepository;
     private final List<String> allowedOrigins;
+    private final List<String> allowedOriginPatterns;
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
@@ -42,6 +42,13 @@ public class SecurityConfig {
         this.allowedOrigins = Arrays.stream(rawAllowedOrigins.split(","))
                 .map(String::trim)
                 .filter(origin -> !origin.isEmpty())
+                .toList();
+        String rawAllowedOriginPatterns = environment.getProperty(
+                "app.cors.allowed-origin-patterns",
+                "");
+        this.allowedOriginPatterns = Arrays.stream(rawAllowedOriginPatterns.split(","))
+                .map(String::trim)
+                .filter(pattern -> !pattern.isEmpty())
                 .toList();
     }
 
@@ -81,6 +88,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(allowedOrigins);
+        configuration.setAllowedOriginPatterns(allowedOriginPatterns);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
         configuration.setAllowCredentials(true);
